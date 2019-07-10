@@ -21,19 +21,40 @@ class App extends Component {
     apiKey: '5de0a82615c24c71b5efc5ca3dea3a93',
     searchTerm: '',
     activeTab: 'search',
+    activePage: 1,
     news: [],
     basicUrl: 'https://newsapi.org/v2/everything?q=Apple&sortBy=popularity&apiKey=5de0a82615c24c71b5efc5ca3dea3a93'
   }
 
 
+  isBottom(el) {
+    return el.getBoundingClientRect().bottom <= window.innerHeight;
+  }
+
+  componentDidMount() {
+    document.addEventListener('scroll', this.trackScrolling);
+  }
+
+  trackScrolling = () => {
+    const wrappedElement = document.getElementById('App');
+    if (this.isBottom(wrappedElement)) {
+      console.log('header bottom reached');
+      this.loadMoreNews()
+    }
+  };
+
+  loadMoreNews = async (event) => {
+    this.setState({activePage: this.state.activePage + 1})
+    this.getNewsBasic()
+  }
 
   onSearchTermChange = (event) => {
-    console.log(event.target.value)
     this.setState({searchTerm: event.target.value})
   }
 
   onChangeTab = async (event, activeTab) => {
-    await this.setState({activeTab: activeTab})
+    await this.setState({activeTab: activeTab,
+                         activePage: 1})
     this.getNewsBasic()
   }
 
@@ -46,7 +67,7 @@ class App extends Component {
     }else{
       url = country;
     }
-    url = `${url}&sortBy=publishedAt&pageSize=10&page=1&apiKey=${this.state.apiKey}`
+    url = `${url}&sortBy=publishedAt&pageSize=10&page=${this.state.activePage}&apiKey=${this.state.apiKey}`
     return url
   }
 
@@ -54,7 +75,10 @@ class App extends Component {
     if(event){
       event.preventDefault()
     }
-    await this.setState({ news: [] })
+
+    if(this.state.activePage == 1){
+      await this.setState({ news: [] })
+    }
 
     const url = this.prepareRequest()
     const news = this.state.news || []
@@ -75,7 +99,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App" style={{ margin: "auto", maxWidth: "900px"}}>
+      <div id="App" className="App" style={{ margin: "auto", maxWidth: "900px"}}>
 
         <form noValidate autoComplete="off" onSubmit={this.getNewsBasic} style={{ margin: "1rem"}} position="fixed">
           <Grid container spacing={2}>

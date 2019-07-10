@@ -22,7 +22,7 @@ const SimpleTabs = (props) => {
       <AppBar position="static">
         <Tabs variant="fullWidth" centered value={props.activeTab} onChange={props.onChangeTab}>
           <Tab value="br" label="Brazil"/>
-          <Tab value="ca" label="Canada"/>
+          <Tab value="fr" label="France"/>
           <Tab value="search" label="Search Results"/>
           <Tab value="us" label="USA"/>
           <Tab value="it" label="Italy"/>
