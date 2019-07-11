@@ -33,7 +33,6 @@ class App extends Component {
   trackScrolling = () => {
     const wrappedElement = document.getElementById('App');
     if (this.isBottom(wrappedElement)) {
-      console.log('header bottom reached');
       this.loadMoreNews()
     }
   };
@@ -49,7 +48,8 @@ class App extends Component {
 
   onChangeTab = async (event, activeTab) => {
     await this.setState({activeTab: activeTab,
-                         activePage: 1})
+                         activePage: 1,
+                         searchTerm:""})
     this.getNewsBasic()
   }
 
@@ -71,6 +71,14 @@ class App extends Component {
       event.preventDefault()
     }
 
+    if(this.state.searchTerm !== "" && this.state.activeTab !== "search"){
+        await this.setState({news: [],
+                       activeTab: "search",
+                       activePage: 1})
+    }else if (this.state.activeTab !== "search") {
+      await this.setState({searchTerm: ""})
+    }
+
     if(this.state.activePage === 1){
       await this.setState({ news: [] })
     }
@@ -81,11 +89,10 @@ class App extends Component {
       let res = await axios.get(url);
       let json = res.data;
       if (json && json.status === "ok") {
-        console.log(json.articles)
         this.setState({ news: [...news, ...json.articles] })
       }
     } catch (er) {
-      console.log(`er: ${er}`)
+      // console.log(`er: ${er}`)
     } finally {
       this.setState({ loading: false })
     }
@@ -99,7 +106,7 @@ class App extends Component {
         <form noValidate autoComplete="off" onSubmit={this.getNewsBasic} style={{ margin: "1rem"}} position="fixed">
           <Grid container spacing={2}>
             <Grid item xs={8}>
-              <InputBase placeholder="Search Term" onChange={this.onSearchTermChange} style={{ height: "100%", width: "100%"}}/>
+              <InputBase value={this.state.searchTerm} placeholder="Search Term" onChange={this.onSearchTermChange} style={{ height: "100%", width: "100%"}}/>
             </Grid>
             <Grid item xs={4}>
               <Button aria-label="Search" variant="contained" color="primary" type="submit" style={{ height: "100%", width: "100%"}}>Search</Button>
