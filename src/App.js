@@ -1,17 +1,12 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom';
 import Button from '@material-ui/core/Button';
 import SimpleTabs from './misc/SimpleTabs';
 import Content from './misc/Content';
 import axios from "axios";
 
 
-import Paper from '@material-ui/core/Paper'
 import InputBase from '@material-ui/core/InputBase'
-import Divider from '@material-ui/core/Divider'
-import IconButton from '@material-ui/core/IconButton'
 import Grid from '@material-ui/core/Grid';
-import AppBar from '@material-ui/core/AppBar';
 
 
 
@@ -76,7 +71,7 @@ class App extends Component {
       event.preventDefault()
     }
 
-    if(this.state.activePage == 1){
+    if(this.state.activePage === 1){
       await this.setState({ news: [] })
     }
 
